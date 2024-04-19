@@ -51,13 +51,15 @@ class ComputerPlays < Game
         @answer = answer
     end
     def game_loop
+        # generate the computer's first guess
         until @guess.length == 4
-            color = @@color_list[rand(4)]
+            color = @@color_list.sample
             @guess.push(color)
         end
         win = false
         moves = 12
         until win == true || moves == 0
+            puts " "
             puts "The computer guesses:"
             puts @guess.join(" ")
             puts " "
@@ -129,6 +131,7 @@ class Validate < Game
     def initialize(pool)
         @color_list = pool
         @results = []
+        puts @color_list
     end
     # make sure that the player inputs the right number of colors
     # and that the color are actual colors that can be guessed
@@ -165,9 +168,15 @@ class Validate < Game
         x = 0
         while x < 4
             unless @results[x] == "match"
+                # if the color is not a possible solution, remove it from the
+                # choice pool
+                if @results[x] == "NA"
+                    @color_list.delete(guess[x])
+                end
+                # choose a new color that wasn't the last one.
                 current_color = guess[x]
                 while guess[x] == current_color
-                    guess[x] = @color_list[rand(4)]
+                    guess[x] = @color_list.sample
                 end
             end
             x += 1
